@@ -1,0 +1,3 @@
+[submodule "third-party/SMPL-Anthropometry/SMPL-Anthropometry"]
+	path = third-party/SMPL-Anthropometry/SMPL-Anthropometry
+	url = https://github.com/DavidBoja/SMPL-Anthropometry.git
