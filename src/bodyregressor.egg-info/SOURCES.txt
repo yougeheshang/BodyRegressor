@@ -1,0 +1,13 @@
+pyproject.toml
+src/BodyRegressor/__init__.py
+src/BodyRegressor/data.py
+src/BodyRegressor/features.py
+src/BodyRegressor/metrics.py
+src/BodyRegressor/models.py
+src/BodyRegressor/predict.py
+src/BodyRegressor/training.py
+src/bodyregressor.egg-info/PKG-INFO
+src/bodyregressor.egg-info/SOURCES.txt
+src/bodyregressor.egg-info/dependency_links.txt
+src/bodyregressor.egg-info/requires.txt
+src/bodyregressor.egg-info/top_level.txt

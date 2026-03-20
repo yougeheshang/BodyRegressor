@@ -1,7 +1,10 @@
+**/*.py
 /material
-/scripts
-/output
+/output/xgb_stability
 /data
-xgb_stability.py
-body_mlp.py
-body_xgb.py
+/models
+/scripts
+/src/tests
+/output/tests
+
+!src/BodyRegressor/*.py

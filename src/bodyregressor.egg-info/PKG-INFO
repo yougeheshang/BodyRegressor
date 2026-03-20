@@ -1,0 +1,10 @@
+Metadata-Version: 2.4
+Name: bodyregressor
+Version: 0.1.0
+Summary: 从人体测量预测体脂等指标
+Requires-Python: >=3.9
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: scikit-learn
+Requires-Dist: xgboost
+Requires-Dist: joblib
