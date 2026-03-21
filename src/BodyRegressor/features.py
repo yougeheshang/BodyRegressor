@@ -84,6 +84,26 @@ def fat_feature_cols(weight_mode: WeightMode) -> list[str]:
     raise ValueError(f"未知 weight_mode: {weight_mode}")
 
 
+def df_to_x_fat(
+    df: pd.DataFrame,
+    *,
+    weight_mode: WeightMode,
+    weight_hat_col: str = WEIGHT_HAT_COL,
+    feature_cols: Optional[list[str]] = None,
+    encode_sex_col: bool = True,
+) -> tuple[np.ndarray, list[str]]:
+    """仅构建体脂预测特征 X（推理阶段无真实目标列）。"""
+    feat_df = build_feature_frame(
+        df,
+        weight_mode=weight_mode,
+        weight_hat_col=weight_hat_col,
+        encode_sex_col=encode_sex_col,
+    )
+    feats = feature_cols or fat_feature_cols(weight_mode)
+    X = feat_df[feats].values.astype(np.float32)
+    return X, feats
+
+
 def df_to_xy_fat(
     df: pd.DataFrame,
     *,
@@ -103,6 +123,18 @@ def df_to_xy_fat(
     X = feat_df[feats].values.astype(np.float32)
     y = feat_df[targets].values.astype(np.float32)
     return X, y, feats, targets
+
+
+def df_to_x_weight(
+    df: pd.DataFrame,
+    *,
+    feature_cols: Optional[list[str]] = None,
+    encode_sex_col: bool = True,
+) -> tuple[np.ndarray, list[str]]:
+    cols = feature_cols or ["Age", "Sex", "Height", "Waist", "Hip"]
+    work = encode_sex(df.copy(), inplace=True) if encode_sex_col else df.copy()
+    X = work[cols].values.astype(np.float32)
+    return X, cols
 
 
 def df_to_xy_weight(

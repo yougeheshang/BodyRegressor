@@ -6,7 +6,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from .features import WeightMode, df_to_xy_fat, df_to_xy_weight, WEIGHT_HAT_COL
+from .features import WeightMode, df_to_x_fat, df_to_x_weight, WEIGHT_HAT_COL
+from .metrics import fat_units_for_targets, format_summary, summarize_predictions
 from .models import (
     XGBMultiTargetRegressor,
     XGBSingleTargetRegressor,
@@ -19,7 +20,7 @@ def predict_weight(df: pd.DataFrame, weight_ckpt: Path) -> np.ndarray:
     model_obj, scaler, feat_cols, _, _ = load_checkpoint(weight_ckpt)
     wrapper = XGBSingleTargetRegressor()
     wrapper.model = model_obj
-    X, _, _ = df_to_xy_weight(df, feature_cols=feat_cols)
+    X, _ = df_to_x_weight(df, feature_cols=feat_cols)
     (X_s,) = transform_with_scaler(scaler, X)
     return wrapper.predict(X_s)
 
@@ -28,7 +29,7 @@ def predict_fat(df: pd.DataFrame, fat_ckpt: Path, *, weight_mode: WeightMode) ->
     model_obj, scaler, feat_cols, tgt_cols, _ = load_checkpoint(fat_ckpt)
     wrapper = XGBMultiTargetRegressor(target_names=tgt_cols)
     wrapper.models = model_obj
-    X, _, _, _ = df_to_xy_fat(df, weight_mode=weight_mode)
+    X, _ = df_to_x_fat(df, weight_mode=weight_mode, feature_cols=feat_cols)
     (X_s,) = transform_with_scaler(scaler, X)
     preds = wrapper.predict(X_s)
     return preds, tgt_cols
@@ -86,7 +87,9 @@ def main() -> None:
     preds, tgt_cols = predict_fat(df, fat_ckpt, weight_mode=mode)
     out = pd.DataFrame(preds, columns=tgt_cols)
     if args.one:
-        print(out.iloc[0].to_dict())
+        units = fat_units_for_targets(tgt_cols)
+        report = summarize_predictions(preds, tgt_cols, units=units)
+        print(format_summary(report, title="Prediction:", target_order=tgt_cols, style="predict"))
     else:
         out.to_csv(args.out_csv, index=False)
         print(f"Saved: {args.out_csv}")

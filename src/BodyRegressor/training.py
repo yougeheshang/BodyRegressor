@@ -16,7 +16,7 @@ from .features import (
     df_to_xy_fat,
     df_to_xy_weight,
 )
-from .metrics import format_summary, summarize
+from .metrics import fat_units_for_targets, format_summary, summarize
 from .models import (
     XGBConfig,
     XGBMultiTargetRegressor,
@@ -88,7 +88,7 @@ def train_fat(
 
     model = XGBMultiTargetRegressor(cfg, target_names=tgt_cols).fit(X_tr_s, y_tr, X_va_s, y_va)
     preds = model.predict(X_te_s)
-    units = {c: ("%" if c == "Percentage_body_fat" else "g") for c in tgt_cols}
+    units = fat_units_for_targets(tgt_cols)
     report = summarize(preds, y_te, target_names=tgt_cols, units=units)
     print(format_summary(report, title="Test set evaluation:", target_order=tgt_cols))
     return model, scaler, feat_cols, tgt_cols
