@@ -15,7 +15,7 @@ import numpy as np
 
 # 仓库根：src/BodyRegressor/smpl_measure.py -> parents[2]
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-_DEFAULT_ANTHRO_DIR = _REPO_ROOT / "third-party" / "SMPL-Anthropometry" / "SMPL-Anthropometry"
+_DEFAULT_ANTHRO_DIR = _REPO_ROOT / "third-party" / "SMPL-Anthropometry"
 
 # label_measurements(STANDARD_LABELS) 后的键 -> 与 NHANES/特征列对应
 _LABEL_HEIGHT = "P"  # height

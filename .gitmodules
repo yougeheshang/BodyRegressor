@@ -1,3 +1,6 @@
-[submodule "third-party/SMPL-Anthropometry/SMPL-Anthropometry"]
-	path = third-party/SMPL-Anthropometry/SMPL-Anthropometry
+[submodule "third-party/SPIN"]
+	path = third-party/SPIN
+	url = git@github.com:nkolot/SPIN.git
+[submodule "third-party/SMPL-Anthropometry"]
+	path = third-party/SMPL-Anthropometry
 	url = https://github.com/DavidBoja/SMPL-Anthropometry.git
