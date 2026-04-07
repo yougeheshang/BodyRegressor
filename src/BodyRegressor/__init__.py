@@ -9,6 +9,7 @@ from .models import (
     XGBMultiTargetRegressor,
     XGBSingleTargetRegressor,
 )
+from .image_to_smpl import infer_smpl_vertices_from_image, resolve_smpl_gender
 
 
 __all__ = [
@@ -17,5 +18,7 @@ __all__ = [
     "XGBConfig",
     "XGBSingleTargetRegressor",
     "XGBMultiTargetRegressor",
+    "infer_smpl_vertices_from_image",
+    "resolve_smpl_gender",
 ]
 

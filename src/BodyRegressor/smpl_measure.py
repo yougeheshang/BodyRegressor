@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import os
 import sys
+import importlib
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
@@ -109,8 +110,11 @@ def measure_smpl_verts(
         sys.path.insert(0, anthro_str)
 
     with _working_directory(anthro_dir):
-        from measure import MeasureBody  # type: ignore[import-untyped]
-        from measurement_definitions import STANDARD_LABELS  # type: ignore[import-untyped]
+        # Avoid name collision with SPIN's `utils` package already in sys.modules.
+        for name in ("utils", "visualize", "measure", "measurement_definitions"):
+            sys.modules.pop(name, None)
+        MeasureBody = importlib.import_module("measure").MeasureBody  # type: ignore[import-untyped]
+        STANDARD_LABELS = importlib.import_module("measurement_definitions").STANDARD_LABELS  # type: ignore[import-untyped]
 
         measurer: Any = MeasureBody("smpl")
         measurer.from_verts(torch.as_tensor(verts, dtype=torch.float32))

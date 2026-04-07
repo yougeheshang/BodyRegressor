@@ -7,3 +7,4 @@
 /src/tests
 /src/BodyRegressor/__pycache__
 !src/BodyRegressor/*.py
+!src/BodyRegressor/cli/*.py
