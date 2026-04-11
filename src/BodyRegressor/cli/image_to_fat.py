@@ -11,7 +11,7 @@ from BodyRegressor.image_to_smpl import default_spin_dir, infer_smpl_vertices_fr
 from BodyRegressor.mesh_predict import mesh_to_fat_row
 from BodyRegressor.metrics import fat_units_for_targets, format_summary, summarize_predictions
 from BodyRegressor.predict import predict_weight
-from BodyRegressor.smpl_measure import default_anthro_dir, measure_smpl_verts
+from BodyRegressor.smpl_measure import default_anthro_dir, measure_smpl_verts, measure_smpl_verts_height_normalized
 
 
 def main() -> None:
@@ -34,6 +34,12 @@ def main() -> None:
     )
 
     p.add_argument("--anthro-dir", type=Path, default=None, help="SMPL-Anthropometry 根目录")
+    p.add_argument(
+        "--height-cm",
+        type=float,
+        default=None,
+        help="可选：真实身高(cm)，将按 Anthropometry height_normalize 比例缩放 mesh 并用于量测",
+    )
     p.add_argument("--weight-mode", choices=[m.value for m in WeightMode], default=WeightMode.HAT.value)
     p.add_argument("--weight-ckpt", type=Path, default=Path("models/weight_xgb.joblib"))
     p.add_argument("--fat-ckpt-stacked", type=Path, default=Path("models/fat_xgb_stacked.joblib"))
@@ -59,11 +65,18 @@ def main() -> None:
         sex=args.sex,
     )
 
+    if args.height_cm is not None:
+        verts, meas, _hn_meta = measure_smpl_verts_height_normalized(
+            verts,
+            target_height_cm=float(args.height_cm),
+            anthro_dir=anthro_dir,
+        )
+    else:
+        meas = measure_smpl_verts(verts, anthro_dir=anthro_dir)
+
     if args.save_verts is not None:
         args.save_verts.parent.mkdir(parents=True, exist_ok=True)
         np.save(args.save_verts, verts.astype(np.float32))
-
-    meas = measure_smpl_verts(verts, anthro_dir=anthro_dir)
 
     weight_used_kg: float
     weight_hat_kg: float | None = None

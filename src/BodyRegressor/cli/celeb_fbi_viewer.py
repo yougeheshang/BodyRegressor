@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 import pandas as pd
-import streamlit as st  # type: ignore[import-not-found]
+import streamlit as st 
 import numpy as np
 from datasets import load_dataset
 from PIL import Image
@@ -89,6 +89,11 @@ def main() -> None:
     weight_mode = st.sidebar.selectbox("weight_mode", options=[m.value for m in WeightMode], index=1)
     mode = WeightMode(weight_mode)
 
+    use_gt_height_normalize = st.sidebar.checkbox(
+        "用真实身高校准 mesh（Anthropometry height-normalize）",
+        value=True,
+    )
+
     # We want to match dataset gender: 0/1 -> male/female templates.
     smpl_gender = "neutral"
 
@@ -103,7 +108,7 @@ def main() -> None:
     col_img, col_metrics = st.columns([1, 1.6])
 
     # Cache per id during the session to avoid re-running SPIN every click.
-    cache_key = f"{selected_id}|{device}|{mode}|{smpl_gender}"
+    cache_key = f"{selected_id}|{device}|{mode}|{smpl_gender}|{use_gt_height_normalize}"
     if "session_cache" not in st.session_state:
         st.session_state.session_cache = {}
 
@@ -120,7 +125,11 @@ def main() -> None:
             gender_gt = int(row["gender"])
             sex_for_model = _gender_to_sex(gender_gt)
 
-            verts, overlay_img = infer_smpl_vertices_and_overlay_from_image(
+            age_gt = float(row["age"])
+            height_gt = float(row["height"])
+            weight_gt = float(row["weight"])
+
+            verts, overlay_img, meas_hn = infer_smpl_vertices_and_overlay_from_image(
                 image_path=tmp_img_path,
                 checkpoint=Path(spin_ckpt).resolve(),
                 spin_dir=Path(spin_dir).resolve(),
@@ -129,13 +138,14 @@ def main() -> None:
                 device=device_arg,
                 smpl_gender=smpl_gender,  # type: ignore[arg-type]
                 sex=sex_for_model,
+                target_height_cm=height_gt if use_gt_height_normalize else None,
+                anthro_dir=Path(anthro_dir).resolve() if use_gt_height_normalize else None,
             )
 
-            meas = measure_smpl_verts(verts, anthro_dir=Path(anthro_dir).resolve())
-
-            age_gt = float(row["age"])
-            height_gt = float(row["height"])
-            weight_gt = float(row["weight"])
+            if meas_hn is not None:
+                meas = meas_hn
+            else:
+                meas = measure_smpl_verts(verts, anthro_dir=Path(anthro_dir).resolve())
 
             # Predicted weight (Weight_hat) & fat preds
             tmp_df = pd.DataFrame(

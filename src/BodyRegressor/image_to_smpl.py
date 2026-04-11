@@ -9,6 +9,8 @@ from pathlib import Path
 from typing import Literal
 from PIL import Image
 
+from .smpl_measure import default_anthro_dir, measure_smpl_verts_height_normalized
+
 # Force PyOpenGL to use OSMesa backend (must be set before any OpenGL import).
 os.environ.setdefault("PYOPENGL_PLATFORM", "osmesa")
 
@@ -226,9 +228,15 @@ def infer_smpl_vertices_and_overlay_from_image(
     device: str | None = None,
     smpl_gender: SmplGenderMode = "neutral",
     sex: int | None = None,
-) -> tuple[np.ndarray, Image.Image]:
+    target_height_cm: float | None = None,
+    anthro_dir: Path | None = None,
+) -> tuple[np.ndarray, Image.Image, dict[str, float] | None]:
     """
     推理得到 verts(6890,3) 并渲染得到拟合可视化图片（裁剪到 224x224）。
+
+    若提供 ``target_height_cm``，按 SMPL-Anthropometry 的 ``height_normalize_measurements``
+    比例缩放 mesh，返回的 **verts 与第三项量测** 为校准后结果；**叠加图始终用 SPIN 原始尺度** 渲染。
+    未提供 ``target_height_cm`` 时第三项为 None，返回 verts 为 SPIN 原始输出。
     """
     spin_dir = Path(spin_dir) if spin_dir is not None else default_spin_dir()
     spin_dir = spin_dir.resolve()
@@ -252,6 +260,7 @@ def infer_smpl_vertices_and_overlay_from_image(
         else (torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"))
     )
 
+    measurements_cm: dict[str, float] | None = None
     with _working_directory(spin_dir):
         import config  # type: ignore[import-untyped]
         import constants  # type: ignore[import-untyped]
@@ -297,7 +306,15 @@ def infer_smpl_vertices_and_overlay_from_image(
                 global_orient=pred_rotmat[:, 0].unsqueeze(1),
                 pose2rot=False,
             )
-            pred_vertices = pred_output.vertices[0].detach().cpu().numpy().astype(np.float32)
+            pred_vertices_raw = pred_output.vertices[0].detach().cpu().numpy().astype(np.float32)
+            pred_vertices_out = pred_vertices_raw
+            if target_height_cm is not None:
+                ad = Path(anthro_dir).resolve() if anthro_dir is not None else default_anthro_dir()
+                pred_vertices_out, measurements_cm, _meta = measure_smpl_verts_height_normalized(
+                    pred_vertices_raw,
+                    target_height_cm=float(target_height_cm),
+                    anthro_dir=ad,
+                )
 
             # Same camera conversion as SPIN demo.py
             camera_translation = torch.stack(
@@ -309,11 +326,12 @@ def infer_smpl_vertices_and_overlay_from_image(
                 dim=-1,
             )[0].cpu().numpy()
 
-            overlay_float = renderer(pred_vertices, camera_translation, img_crop)
+            # 叠加图始终用 SPIN 原始尺度，与 weak-perspective / 训练假设一致
+            overlay_float = renderer(pred_vertices_raw, camera_translation, img_crop)
             overlay_u8 = (np.clip(overlay_float, 0.0, 1.0) * 255.0).astype(np.uint8)
             overlay_img = Image.fromarray(overlay_u8)
 
-    if pred_vertices.shape != (6890, 3):
-        raise RuntimeError(f"SPIN 输出 verts 形状异常: {pred_vertices.shape}")
-    return pred_vertices, overlay_img
+    if pred_vertices_out.shape != (6890, 3):
+        raise RuntimeError(f"SPIN 输出 verts 形状异常: {pred_vertices_out.shape}")
+    return pred_vertices_out, overlay_img, measurements_cm
 
