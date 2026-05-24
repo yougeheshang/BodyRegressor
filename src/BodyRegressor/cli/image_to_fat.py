@@ -11,6 +11,9 @@ from BodyRegressor.image_to_smpl import default_spin_dir, infer_smpl_vertices_fr
 from BodyRegressor.mesh_predict import mesh_to_fat_row
 from BodyRegressor.metrics import fat_units_for_targets, format_summary, summarize_predictions
 from BodyRegressor.predict import predict_weight
+from BodyRegressor.cli.llm_args import add_llm_arguments
+from BodyRegressor.health_report import build_health_report, format_report_markdown
+from BodyRegressor.health_report.pipeline import report_input_from_predictions
 from BodyRegressor.smpl_measure import default_anthro_dir, measure_smpl_verts, measure_smpl_verts_height_normalized
 
 
@@ -45,6 +48,18 @@ def main() -> None:
     p.add_argument("--fat-ckpt-stacked", type=Path, default=Path("models/fat_xgb_stacked.joblib"))
     p.add_argument("--fat-ckpt-full", type=Path, default=Path("models/fat_xgb_full.joblib"))
     p.add_argument("--weight-kg", type=float, default=None, help="仅 weight-mode=real 时使用")
+    p.add_argument(
+        "--health-report",
+        action="store_true",
+        help="在预测后生成健康报告（规则 + 知识库检索，可选 LLM）",
+    )
+    p.add_argument("--health-report-out", type=Path, default=None, help="报告 Markdown 输出路径")
+    p.add_argument(
+        "--health-report-no-llm",
+        action="store_true",
+        help="健康报告不调用大模型，仅规则结论 + 知识库摘录",
+    )
+    add_llm_arguments(p)
     args = p.parse_args()
 
     spin_dir = args.spin_dir if args.spin_dir is not None else default_spin_dir()
@@ -128,6 +143,35 @@ def main() -> None:
     units = fat_units_for_targets(tgt_cols)
     report = summarize_predictions(preds, tgt_cols, units=units)
     print(format_summary(report, title="Prediction:", target_order=tgt_cols, style="predict"))
+
+    if args.health_report:
+        inp = report_input_from_predictions(
+            age=args.age,
+            sex=args.sex,
+            height_cm=float(meas["Height"]),
+            weight_kg=weight_used_kg,
+            waist_cm=float(meas["Waist"]),
+            hip_cm=float(meas["Hip"]),
+            bmi=bmi,
+            bri=bri,
+            preds=preds,
+            target_names=tgt_cols,
+        )
+        hr = build_health_report(
+            inp,
+            use_llm=not args.health_report_no_llm,
+            llm_provider=args.llm_provider,
+            llm_model=args.llm_model,
+            llm_base_url=args.llm_base_url,
+            llm_api_key=args.llm_api_key,
+        )
+        md = format_report_markdown(hr)
+        if args.health_report_out:
+            args.health_report_out.parent.mkdir(parents=True, exist_ok=True)
+            args.health_report_out.write_text(md, encoding="utf-8")
+            print(f"\nHealth report written to {args.health_report_out}")
+        else:
+            print("\n" + md)
 
 
 if __name__ == "__main__":

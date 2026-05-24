@@ -1,6 +1,7 @@
 **/*.py
+.env
 /material
-/output
+/outputs
 /data
 /models
 /scripts
@@ -8,3 +9,6 @@
 /src/BodyRegressor/__pycache__
 !src/BodyRegressor/*.py
 !src/BodyRegressor/cli/*.py
+!src/BodyRegressor/health_report/
+!src/BodyRegressor/health_report/**/*.py
+!src/BodyRegressor/health_report/knowledge/**

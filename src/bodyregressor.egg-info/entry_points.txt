@@ -1,0 +1,2 @@
+[console_scripts]
+bodyreg-image-to-fat = BodyRegressor.cli.image_to_fat:main

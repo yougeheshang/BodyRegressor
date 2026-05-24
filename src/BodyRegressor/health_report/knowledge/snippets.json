@@ -1,0 +1,114 @@
+[
+  {
+    "id": "bmi_overview",
+    "title": "BMI 是什么",
+    "tags": ["metric:BMI", "grade:normal", "grade:borderline", "grade:high", "sex:male", "sex:female"],
+    "source": "internal_kb_v2",
+    "body": "BMI（体质指数）= 体重(kg) / 身高(m)²，是筛查体重是否偏离的常见指标，但不能区分肌肉与脂肪，运动员或肌肉量高者可能 BMI 偏高但体脂并不高。"
+  },
+  {
+    "id": "bmi_high_lifestyle",
+    "title": "BMI 偏高时的一般生活方式建议",
+    "tags": ["metric:BMI", "grade:borderline", "grade:high", "sex:male", "sex:female"],
+    "source": "internal_kb_v2",
+    "body": "在未有医嘱禁忌的前提下，可逐步增加中等强度活动（如快走、骑行），控制含糖饮料与超加工食品，保证蛋白质与蔬菜摄入，并关注睡眠与压力。体重变化宜缓慢、可持续。"
+  },
+  {
+    "id": "pbf_intro",
+    "title": "体脂率说明",
+    "tags": ["metric:Percentage_body_fat", "grade:normal", "grade:borderline", "grade:high", "sex:male", "sex:female"],
+    "source": "internal_kb_v2",
+    "body": "体脂率反映脂肪占体重的比例。不同性别、年龄参考区间不同；单次测量或模型估计存在误差，宜与腰围、内脏脂肪等指标一起看趋势而非绝对值。"
+  },
+  {
+    "id": "pbf_high_female",
+    "title": "女性体脂率偏高的常见关注点",
+    "tags": ["metric:Percentage_body_fat", "grade:borderline", "grade:high", "sex:female"],
+    "source": "internal_kb_v2",
+    "body": "体脂率偏高可能与饮食能量盈余、活动不足、睡眠不足等有关。可记录 1～2 周饮食与步数，优先减少添加糖与深夜加餐，并结合力量训练保留肌肉。"
+  },
+  {
+    "id": "pbf_high_male",
+    "title": "男性体脂率偏高的常见关注点",
+    "tags": ["metric:Percentage_body_fat", "grade:borderline", "grade:high", "sex:male"],
+    "source": "internal_kb_v2",
+    "body": "男性腹部脂肪堆积常与饮酒、精制碳水及久坐相关。除有氧运动外，适度抗阻训练有助于改善体成分；若腰围同步偏高，应更重视中心性肥胖风险。"
+  },
+  {
+    "id": "total_fat_fmi",
+    "title": "全身脂肪量与 FMI",
+    "tags": ["metric:Total_fat_mass", "grade:normal", "grade:borderline", "grade:high", "sex:male", "sex:female"],
+    "source": "internal_kb_v2",
+    "body": "全身脂肪量（DXA）常用脂肪质量指数 FMI = 脂肪(kg)/身高(m)² 描述负荷。NHANES 等人群研究用 FMI 辅助评估肥胖程度，应与体脂率、腰围等联合解读。"
+  },
+  {
+    "id": "android_central",
+    "title": "Android 脂肪与中心性肥胖",
+    "tags": ["metric:Android_fat_mass", "grade:borderline", "grade:high", "sex:male", "sex:female"],
+    "source": "internal_kb_v2",
+    "body": "Android 指腹部（脐周）脂肪区。该区域脂肪升高常与腰围、内脏脂肪及 Android/Gynoid 比值升高相关，提示中心性脂肪分布，需关注代谢与心血管风险因素。"
+  },
+  {
+    "id": "ag_ratio_explainer",
+    "title": "Android/Gynoid 脂肪比",
+    "tags": ["metric:Android_fat_mass", "metric:Gynoid_fat_mass", "grade:borderline", "grade:high", "sex:male", "sex:female"],
+    "source": "internal_kb_v2",
+    "body": "NHANES DXA 报告 Android 与 Gynoid 脂肪质量比（DXXAGRAT），常见范围约 0.5–1.9。比值升高表示脂肪更多分布于腹部而非臀腿，与中心性肥胖模式一致。"
+  },
+  {
+    "id": "gynoid_pear_shape",
+    "title": "Gynoid 脂肪说明",
+    "tags": ["metric:Gynoid_fat_mass", "grade:normal", "grade:borderline", "grade:high", "sex:female", "sex:male"],
+    "source": "internal_kb_v2",
+    "body": "Gynoid 指臀腿脂肪区。该区域脂肪偏高常与全身脂肪增加有关；在女性中相对 Android 单纯偏高，部分研究认为代谢风险低于腹型肥胖，但仍需结合体脂率与腰围。"
+  },
+  {
+    "id": "subcutaneous_sat",
+    "title": "皮下脂肪 (SAT)",
+    "tags": ["metric:Subcutaneous_fat_mass", "grade:normal", "grade:borderline", "grade:high", "sex:male", "sex:female"],
+    "source": "internal_kb_v2",
+    "body": "皮下脂肪位于皮肤下方，占体表脂肪主要部分。皮下脂肪升高反映总体脂增加，其代谢活性通常低于内脏脂肪，但仍是体成分管理的重要组成。"
+  },
+  {
+    "id": "abdominal_total",
+    "title": "腹部脂肪总量",
+    "tags": ["metric:Total_abdominal_fat_mass", "grade:borderline", "grade:high", "sex:male", "sex:female"],
+    "source": "internal_kb_v2",
+    "body": "腹部脂肪总量包含皮下与内脏等腹腔周围脂肪成分。升高时应同时查看 VAT、腰围及 Android 脂肪，以评估中心性肥胖与代谢风险。"
+  },
+  {
+    "id": "waist_central_obesity",
+    "title": "腰围与中心性肥胖",
+    "tags": ["metric:Waist", "grade:borderline", "grade:high", "sex:male", "sex:female"],
+    "source": "internal_kb_v2",
+    "body": "腰围是中心性肥胖的简易指标，与内脏脂肪及代谢风险相关。测量应在呼气末、肋骨下缘与髂嵴中点水平进行；穿衣厚度会影响结果。"
+  },
+  {
+    "id": "vat_explainer",
+    "title": "内脏脂肪 (VAT) 简介",
+    "tags": ["metric:Visceral_adipose_tissue_mass", "grade:normal", "grade:borderline", "grade:high", "sex:male", "sex:female"],
+    "source": "internal_kb_v2",
+    "body": "内脏脂肪围绕腹腔器官分布，与胰岛素抵抗、血脂异常等代谢问题关联度较高。改善 VAT 通常需要整体能量平衡、活动量增加及饮食质量提升，而非局部减脂。"
+  },
+  {
+    "id": "vat_high_diet",
+    "title": "内脏脂肪偏高时的饮食方向（科普）",
+    "tags": ["metric:Visceral_adipose_tissue_mass", "grade:borderline", "grade:high", "sex:male", "sex:female"],
+    "source": "internal_kb_v2",
+    "body": "一般建议增加膳食纤维（全谷物、豆类、蔬菜），减少含糖饮料与反式脂肪；规律进餐，避免长期极端节食导致反弹。具体方案应结合个人疾病史由营养师或医生制定。"
+  },
+  {
+    "id": "peripheral_limbs",
+    "title": "外周（四肢）脂肪",
+    "tags": ["metric:Peripheral_fat_mass", "grade:normal", "grade:borderline", "grade:high", "sex:male", "sex:female"],
+    "source": "internal_kb_v2",
+    "body": "外周脂肪为四肢脂肪总和（NHANES 中左右臂、腿脂肪量之和）。升高多反映全身脂肪增加，宜与全身脂肪量、体脂率及分布指标一并分析。"
+  },
+  {
+    "id": "disclaimer_general",
+    "title": "使用边界",
+    "tags": ["general"],
+    "source": "internal_kb_v2",
+    "body": "本内容仅供健康科普与生活方式参考，不能替代体检、影像或实验室检查，不构成医疗诊断或治疗建议。孕妇、青少年、慢性病患者请在专业人士指导下解读指标。"
+  }
+]
